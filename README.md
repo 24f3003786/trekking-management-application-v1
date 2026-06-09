@@ -1,2 +1,2 @@
-# trekking-management-application-v1
+# Trekking Management Application 
 This is a trekking management web application that allows Admin, Trek Staff, and Users (Trekkers) to interact with the system based on their roles.
