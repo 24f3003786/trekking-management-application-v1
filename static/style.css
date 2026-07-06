@@ -1,0 +1,45 @@
+*{
+    margin:0px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#main{
+    border:2px solid black;
+    margin-top: 0px;
+}
+
+#canvas{
+    border:2px solid #dcdcdc;
+    width:73%;
+    height:800px;
+    margin:auto;
+}
+
+#form-body{
+    border:1px solid #dcdcdc;
+    width:400px;
+    height:400px;
+    margin:auto;
+    margin-top:200px;
+    border-radius:20px;
+    padding: 15px;
+    overflow-y:auto;
+    box-shadow:0px 4px 10px rgba(0,0,0,0.1);
+}
+
+.headings{
+    margin:25px;
+    padding: 4px;
+    margin-top:8px;
+}
+
+table{
+    max-height: 20px; overflow-y: auto;
+}
+
+.login-heading{
+    color:#222624;
+    font-weight:bold;
+    font-size:xx-large;
+    
+}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="main">
+        <div id="canvas">
+
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="/">Trekking Management</a>
+                    <div class="navbar-nav ms-auto">
+                        <a class="nav-link" href="/">Home</a>
+                        <a class="nav-link active" href="/login">Login</a>
+                        <a class="nav-link" href="/register-choice">Register</a>
+                    </div>
+                </div>
+            </nav>
+
+            <div id="form-body">
+                <br>
+                <h2 class="login-heading text-center">Login</h2>
+                <br>
+
+                <!--
+                    get_flashed_messages(with_categories=True) fetches messages
+                    queued by Flask's flash() function in app.py.
+                    with_categories=True returns (category, message) pairs.
+                    category maps to Bootstrap alert color: "danger" = red, "success" = green.
+                    Flask clears the queue automatically after they are displayed once.
+                -->
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} py-2">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <!--
+                    action="/login" tells the browser which URL to send the form data to.
+                    method="POST" sends the data in the request body (not the URL).
+                    Always use POST for login — GET would expose the password in the URL bar.
+                -->
+                <form action="/login" method="POST">
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email"
+                               placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password"
+                               placeholder="Enter your password" required>
+                    </div>
+
+                    <div class="text-center">
+                        <input type="submit" class="btn btn-primary px-4" value="Login">
+                        <br><br>
+                        <small>Don't have an account? <a href="/register-choice">Register</a></small>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
