@@ -30,19 +30,14 @@
                 </p>
                 <br>
 
-                <!-- {% with messages = get_flashed_messages(with_categories=True) %}
+                {% with messages = get_flashed_messages(with_categories=True) %}
                     {% if messages %}
                         {% for category, message in messages %}
                             <div class="alert alert-{{ category }} py-2">{{ message }}</div>
                         {% endfor %}
                     {% endif %}
-                {% endwith %} -->
+                {% endwith %}
 
-                <!--
-                    action="/register/trek_staff" — FIXED from the original which incorrectly
-                    pointed to /register/trekker, meaning staff registrations were being
-                    saved as trekkers and the staff profile was never created.
-                -->
                 <form action="/register/trek_staff" method="POST">
 
                     <div class="mb-3">
@@ -71,13 +66,6 @@
 
                     <div class="mb-3">
                         <label for="description" class="form-label">About You / Experience</label>
-                        <!--
-                            <textarea> is for multi-line text.
-                            Unlike <input>, there is no value="" attribute.
-                            Pre-fill content goes between the opening and closing tags.
-                            rows="3" controls the visible height.
-                            name="description" → request.form.get("description") in Flask.
-                        -->
                         <textarea class="form-control" id="description" name="description" rows="3"
                                   placeholder="Describe your trekking experience or qualifications"></textarea>
                     </div>

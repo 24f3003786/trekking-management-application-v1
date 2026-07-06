@@ -1,0 +1,388 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Add Trek</title>
+
+    <link rel="stylesheet" href="../static/style.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <style>
+        #form-body{ width: 900px;
+                    height: 550px;
+                    margin-top: 50px;
+                    border-radius: 20px;
+                    padding: 30px;
+                }
+    </style>
+</head>
+
+<body>
+
+    <div id="main">
+
+        <div id="canvas">
+
+            
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                <div class="container-fluid">
+
+                    <a class="navbar-brand" href="/admin/dashboard">
+                        Trekking Management Application
+                    </a>
+
+                    <div class="navbar-nav ms-auto">
+                        <a class="nav-link" href="/admin/dashboard">Dashboard</a>
+                        <a class="nav-link active" href="/admin/treks">Treks</a>
+                        <a class="nav-link" href="/admin/staff">Staff</a>
+                        <a class="nav-link" href="/admin/users">Users</a>
+                        <a class="nav-link" href="/admin/bookings">Bookings</a>
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </div>
+
+                </div>
+            </nav>
+
+            <div id="form-body">
+
+                <h2 class="login-heading text-center">
+                    Add New Trek
+                </h2>
+
+                <br>
+
+                <form action="/admin/trek/add" method="POST">
+
+                    <div class="row">
+
+                        
+                        <div class="col-md-6">
+
+                            <div class="mb-3">
+                                <label class="form-label">Trek Name</label>
+                                <input type="text"
+                                       class="form-control"
+                                       name="trek_name"
+                                       required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Location</label>
+                                <input type="text"
+                                       class="form-control"
+                                       name="location"
+                                       required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Difficulty</label>
+
+                                <select class="form-select"
+                                        name="difficulty"
+                                        required>
+
+                                    <option value="">Select Difficulty</option>
+                                    <option>Easy</option>
+                                    <option>Moderate</option>
+                                    <option>Difficult</option>
+
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Duration (Days)</label>
+                                <input type="number"
+                                       class="form-control"
+                                       name="duration"
+                                       required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Available Slots</label>
+
+                                <select class="form-select"
+                                        name="available_slots"
+                                        required>
+
+                                    <option value="">Select Slots</option>
+                                    <option>10</option>
+                                    <option>20</option>
+                                    <option>30</option>
+                                    <option>40</option>
+                                    <option>50</option>
+
+                                </select>
+                            </div>
+
+                        </div>
+
+                        
+                        <div class="col-md-6">
+
+                            <div class="mb-3">
+                                <label class="form-label">Trek Status</label>
+
+                                <select class="form-select"
+                                        name="status"
+                                        required>
+
+                                    <option value="">Select Status</option>
+                                    <option>Open</option>
+                                    <option>Closed</option>
+                                    <option>Completed</option>
+
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Start Date</label>
+                                <input type="date"
+                                       class="form-control"
+                                       name="start_date"
+                                       required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">End Date</label>
+                                <input type="date"
+                                       class="form-control"
+                                       name="end_date"
+                                       required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Assign Staff</label>
+
+                                <select class="form-select"
+                                        name="staff_id">
+
+                                    <option value="">Select Staff</option>
+
+                                    {% for staff in approved_staff %}
+                                        <option value="{{ staff.id }}">
+                                            {{ staff.user.name }}
+                                        </option>
+                                    {% endfor %}
+
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+
+                                <textarea class="form-control"
+                                          name="description"
+                                          rows="2"></textarea>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="text-end mt-4">
+
+                        <a href="/admin/treks"
+                           class="btn btn-secondary me-2">
+                            Cancel
+                        </a>
+
+                        <input type="submit"
+                               class="btn btn-primary"
+                               value="Create Trek">
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Add Trek</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /*
+            Overriding #form-body for this wide two-column form.
+            style.css sets width:400px which is fine for login forms,
+            but the trek form needs more space for the two-column layout.
+            Inline <style> here overrides just for this page.
+        */
+        #form-body {
+                    width: 900px;
+                    height: 550px;
+                    margin-top: 50px;
+                    border-radius: 20px;
+                    padding: 30px;
+                    }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div id="canvas">
+
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="/admin/dashboard">Trekking Management</a>
+                    <div class="navbar-nav ms-auto">
+                        <a class="nav-link" href="/admin/dashboard">Dashboard</a>
+                        <a class="nav-link active" href="/admin/treks">Treks</a>
+                        <a class="nav-link" href="/admin/staff">Staff</a>
+                        <a class="nav-link" href="/admin/users">Users</a>
+                        <a class="nav-link" href="/admin/bookings">Bookings</a>
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </div>
+                </div>
+            </nav>
+
+            <div id="form-body">
+                <h2 class="login-heading text-center">Add New Trek</h2>
+                <br>
+
+                <!-- {% with messages = get_flashed_messages(with_categories=True) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} py-2">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %} -->
+
+                <form action="/admin/trek/add" method="POST">
+
+                    <!--
+                        Bootstrap row + col-md-6 creates a two-column grid.
+                        row: starts a flexbox container.
+                        col-md-6: each takes 6 of Bootstrap's 12 columns → two side-by-side.
+                        On screens smaller than "md" (768px), they stack vertically.
+                    -->
+                    <div class="row">
+
+                        <!-- Left Column -->
+                        <div class="col-md-6">
+
+                            <div class="mb-3">
+                                <label class="form-label">Trek Name</label>
+                                <input type="text" class="form-control" name="trek_name" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Location</label>
+                                <input type="text" class="form-control" name="location" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Difficulty</label>
+                                <!--
+                                    <select> creates a dropdown.
+                                    name="difficulty" → request.form.get("difficulty") in Flask.
+                                    The first option has value="" so it acts as a placeholder.
+                                    required prevents form submission if placeholder is still selected.
+                                -->
+                                <select class="form-select" name="difficulty" required>
+                                    <option value="">-- Select Difficulty --</option>
+                                    <option>Easy</option>
+                                    <option>Moderate</option>
+                                    <option>Difficult</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Duration (Days)</label>
+                                <!--
+                                    min="1" is HTML5 browser-side validation.
+                                    It prevents the user from entering 0 or negative numbers
+                                    before the form is even submitted to Flask.
+                                -->
+                                <input type="number" class="form-control" name="duration" min="1" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Available Slots</label>
+                                <select class="form-select" name="available_slots" required>
+                                    <option value="">-- Select Slots --</option>
+                                    <option>10</option>
+                                    <option>20</option>
+                                    <option>30</option>
+                                    <option>40</option>
+                                    <option>50</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <!-- Right Column -->
+                        <div class="col-md-6">
+
+                            <div class="mb-3">
+                                <label class="form-label">Trek Status</label>
+                                <select class="form-select" name="status" required>
+                                    <option value="">-- Select Status --</option>
+                                    <option>Open</option>
+                                    <option>Closed</option>
+                                    <option>Completed</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Start Date</label>
+                                <input type="date" class="form-control" name="start_date" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">End Date</label>
+                                <input type="date" class="form-control" name="end_date" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Assign Staff</label>
+                                <select class="form-select" name="staff_id">
+                                    <option value="">-- No Staff Assigned --</option>
+                                    <!--
+                                        approved_staff is a list of Staff_Profile objects passed from Flask.
+                                        Flask sends it as: render_template("admin_add_trek.html", approved_staff=...)
+                                        
+                                        staff.id → the Staff_Profile primary key, saved as Trek.staff_id in DB.
+                                        staff.user.name → the linked User's name shown in the dropdown.
+                                        When submitted, Flask reads request.form.get("staff_id") → e.g. "3".
+                                    -->
+                                    {% for staff in approved_staff %}
+                                    <option value="{{ staff.id }}">{{ staff.user.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" name="description" rows="3"
+                                          placeholder="Describe the trek route, terrain, etc."></textarea>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="text-end mt-3">
+                        <a href="/admin/treks" class="btn btn-secondary me-2">Cancel</a>
+                        <input type="submit" class="btn btn-primary" value="Create Trek">
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

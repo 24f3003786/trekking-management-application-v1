@@ -27,13 +27,6 @@
                 <h2 class="login-heading text-center">Login</h2>
                 <br>
 
-                <!--
-                    get_flashed_messages(with_categories=True) fetches messages
-                    queued by Flask's flash() function in app.py.
-                    with_categories=True returns (category, message) pairs.
-                    category maps to Bootstrap alert color: "danger" = red, "success" = green.
-                    Flask clears the queue automatically after they are displayed once.
-                -->
                 {% with messages = get_flashed_messages(with_categories=True) %}
                     {% if messages %}
                         {% for category, message in messages %}
@@ -41,12 +34,7 @@
                         {% endfor %}
                     {% endif %}
                 {% endwith %}
-
-                <!--
-                    action="/login" tells the browser which URL to send the form data to.
-                    method="POST" sends the data in the request body (not the URL).
-                    Always use POST for login — GET would expose the password in the URL bar.
-                -->
+                
                 <form action="/login" method="POST">
 
                     <div class="mb-3">

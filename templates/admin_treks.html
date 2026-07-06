@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Manage Treks</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="main">
+        <div id="canvas">
+
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="/admin/dashboard">Trekking Management</a>
+                    <div class="navbar-nav ms-auto">
+                        <a class="nav-link" href="/admin/dashboard">Dashboard</a>
+                        <a class="nav-link active" href="/admin/treks">Treks</a>
+                        <a class="nav-link" href="/admin/staff">Staff</a>
+                        <a class="nav-link" href="/admin/users">Users</a>
+                        <a class="nav-link" href="/admin/bookings">Bookings</a>
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">Treks</h4>
+                    <a href="/admin/trek/add" class="btn btn-primary btn-sm">+ Add New Trek</a>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} py-2">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form method="GET" action="/admin/treks" class="mb-3">
+                    <div class="input-group">
+                        <select name="search_field" class="form-select" style="max-width: 150px;">
+                            <option value="trek_name" {% if search_field == 'trek_name' %}selected{% endif %}>Trek Name</option>
+                            <option value="location" {% if search_field == 'location' %}selected{% endif %}>Location</option>
+                            <option value="difficulty" {% if search_field == 'difficulty' %}selected{% endif %}>Difficulty</option>
+                            <option value="trek_status" {% if search_field == 'trek_status' %}selected{% endif %}>Status</option>
+                        </select>
+                        <input type="text"
+                               class="form-control"
+                               name="search"
+                               value="{{ search_query }}"
+                               placeholder="Search treks...">
+                        <button type="submit" class="btn btn-outline-success">Search</button>
+                    </div>
+                </form>
+
+                <!-- ── TREKS TABLE ── -->
+                {% if treks %}
+                <div style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-bordered table-hover text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Trek Name</th>
+                                <th>Location</th>
+                                <th>Difficulty</th>
+                                <th>Slots</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for trek in treks %}
+                            <tr>
+                                <td>{{ trek.id }}</td>
+                                <td>{{ trek.trek_name }}</td>
+                                <td>{{ trek.location }}</td>
+                                <td>{{ trek.difficulty }}</td>
+                                <td>{{ trek.available_slots }}</td>
+                                <td>{{ trek.trek_status }}</td>
+                                <td>
+                                    <div class="d-flex gap-3 justify-content-center">
+                                        <a href="/admin/trek/edit/{{trek.id}}" class="btn btn-warning btn-sm">Update</a>
+                                        <a href="/admin/trek/delete/{{trek.id}}" class="btn btn-danger btn-sm">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+                {% elif search_query %}
+                <div class="alert alert-warning">No treks found matching "{{ search_query }}".</div>
+                {% else %}
+                <div class="alert alert-info">No treks added yet.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

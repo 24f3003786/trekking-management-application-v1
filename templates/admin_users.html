@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Manage Users</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="main">
+        <div id="canvas">
+
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="/admin/dashboard">Trekking Management</a>
+                    <div class="navbar-nav ms-auto">
+                        <a class="nav-link" href="/admin/dashboard">Dashboard</a>
+                        <a class="nav-link" href="/admin/treks">Treks</a>
+                        <a class="nav-link" href="/admin/staff">Staff</a>
+                        <a class="nav-link active" href="/admin/users">Users</a>
+                        <a class="nav-link" href="/admin/bookings">Bookings</a>
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container mt-4">
+
+                <h4 class="mb-3">Users</h4>
+
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} py-2">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <ul class="nav nav-tabs mb-3">
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_tab == 'active' %}active{% endif %}"
+                           href="/admin/users?tab=active">
+                            Active ({{ active_users | length }})
+                            <!-- <span class="badge bg-secondary ms-1">{{ active_users | length }}</span> -->
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_tab == 'blacklisted' %}active{% endif %}"
+                           href="/admin/users?tab=blacklisted">
+                            Blacklisted ({{ blacklisted_users | length }})
+                            <!-- <span class="badge bg-secondary ms-1">{{ blacklisted_users | length }}</span> -->
+                        </a>
+                    </li>
+                </ul>
+                
+                <form method="GET" action="/admin/users" class="mb-3">
+                    
+                    <input type="hidden" name="tab" value="{{ active_tab }}">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="search" value="{{ search_query }}" placeholder="Search users by name or email...">
+                        <button type="submit" class="btn btn-outline-success">Search</button>
+                    </div>
+                </form>
+
+                <!-- ── ACTIVE USERS TABLE ── -->
+                {% if active_tab == 'active' %}
+
+                    {% if active_users %}
+                    <table class="table table-bordered table-hover text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Bookings</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!--
+                                active_users is a list of User objects filtered by:
+                                    role="trekker" and is_blacklisted=False
+                                In app.py:
+                                    active_users = User.query.filter_by(role="trekker", is_blacklisted=False)
+                                    if search_query:
+                                        active_users = active_users.filter(
+                                            or_(
+                                                User.name.ilike(f'%{search_query}%'),
+                                                User.email.ilike(f'%{search_query}%')
+                                            )
+                                        )
+                                    active_users = active_users.all()
+
+                                or_() lets you search across multiple columns at once —
+                                so "john" matches both name="John Doe" and email="john@mail.com".
+                                You need to import it: from sqlalchemy import or_
+                            -->
+                            {% for user in active_users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.name }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.phone }}</td>
+                                <!--
+                                    user.bookings is the relationship list defined in models.py.
+                                    user.bookings | length counts how many bookings this user has.
+                                    This works because of: bookings = db.relationship("Booking", backref="user")
+                                    SQLAlchemy loads the related bookings automatically when accessed.
+                                -->
+                                <td>{{ user.bookings | length }}</td>
+                                <td> 
+                                    <a href="{{ url_for('blacklist_user', user_id=user.id) }}" class="btn btn-danger btn-sm">Blacklist</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                        {% if search_query %}
+                            <div class="alert alert-warning">No users found matching "{{ search_query }}".</div>
+                        {% else %}
+                            <div class="alert alert-info">No active users.</div>
+                        {% endif %}
+                    {% endif %}
+
+                <!-- ── BLACKLISTED USERS TABLE ── -->
+                {% elif active_tab == 'blacklisted' %}
+
+                    {% if blacklisted_users %}
+                    <table class="table table-bordered table-hover text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Bookings</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in blacklisted_users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.name }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.phone }}</td>
+                                <td>{{ user.bookings | length }}</td>
+                                <td>
+                                    <a href="{{ url_for('unblacklist_user', user_id=user.id) }}" class="btn btn-secondary btn-sm">Unblacklist</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                        {% if search_query %}
+                            <div class="alert alert-warning">No blacklisted users matching "{{ search_query }}".</div>
+                        {% else %}
+                            <div class="alert alert-info">No blacklisted users.</div>
+                        {% endif %}
+                    {% endif %}
+
+                {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
