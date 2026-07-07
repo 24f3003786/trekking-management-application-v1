@@ -127,7 +127,7 @@ def login():
         elif user.role == "trekker":
             #session['role'] = user.role
             #session['user_id'] = user.id
-            return redirect(url_for("trekker_dashboard"))
+            return redirect(url_for("trekker_dashboard",user_id=user.id))
         elif user.role == "trek_staff":
             if user.staff_profile.approved:
                 #session['role'] = user.role
@@ -306,7 +306,7 @@ def approve_staff(staff_id):
     staff.approved = True
     db.session.commit()
     flash(f"{staff.user.name} approved.", "success")
-    return redirect(url_for("manage_staff", tab="pending"))
+    return redirect(url_for("admin_staff", tab="pending"))
 
 
 @app.route("/admin/reject_staff/<int:staff_id>", methods=["POST"])
@@ -318,25 +318,25 @@ def reject_staff(staff_id):
     db.session.delete(user)
     db.session.commit()
     flash("Staff application rejected.", "warning")
-    return redirect(url_for("manage_staff", tab="pending"))
+    return redirect(url_for("admin_staff", tab="pending"))
 
 
-@app.route("/admin/blacklist_staff/<int:staff_id>", methods=["POST"])
+@app.route("/admin/blacklist_staff/<int:staff_id>")
 def blacklist_staff(staff_id):
     staff = Staff_Profile.query.get_or_404(staff_id)
     staff.user.is_blacklisted = True
     db.session.commit()
     flash(f"{staff.user.name} blacklisted.", "danger")
-    return redirect(url_for("manage_staff", tab="approved"))
+    return redirect(url_for("admin_staff", tab="approved"))
 
 
-@app.route("/admin/unblacklist_staff/<int:staff_id>", methods=["POST"])
+@app.route("/admin/unblacklist_staff/<int:staff_id>")
 def unblacklist_staff(staff_id):
     staff = Staff_Profile.query.get_or_404(staff_id)
     staff.user.is_blacklisted = False
     db.session.commit()
     flash(f"{staff.user.name} unblacklisted.", "success")
-    return redirect(url_for("manage_staff", tab="blacklisted"))
+    return redirect(url_for("admin_staff", tab="blacklisted"))
 
 
 # --------------------------------- Admin User Management ---------------------------------
@@ -362,7 +362,7 @@ def admin_users():
                            blacklisted_users=blacklisted_q.all())
 
 
-@app.route("/admin/blacklist_user/<int:user_id>", methods=["POST"])
+@app.route("/admin/blacklist_user/<int:user_id>")
 def blacklist_user(user_id):
     user = User.query.get_or_404(user_id)
     user.is_blacklisted = True
@@ -371,7 +371,7 @@ def blacklist_user(user_id):
     return redirect(url_for("admin_users", tab="active"))
 
 
-@app.route("/admin/unblacklist_user/<int:user_id>", methods=["POST"])
+@app.route("/admin/unblacklist_user/<int:user_id>")
 def unblacklist_user(user_id):
     user = User.query.get_or_404(user_id)
     user.is_blacklisted = False
@@ -408,11 +408,93 @@ def trek_staff_dashboard():
     return "Trek Staff dashboard coming soon"
 
 
-# --------------------------------- Trekker Dashboard (placeholder) ---------------------------------
+# --------------------------------- Trekker Dashboard ---------------------------------
 
-@app.route("/trekker/dashboard")
-def trekker_dashboard():
-    return "Trekker dashboard coming soon"
+@app.route("/trekker/dashboard/<int:user_id>")
+def trekker_dashboard(user_id):
+    user = User.query.get_or_404(user_id)
+
+    location = request.args.get("location", "").strip()
+    difficulty = request.args.get("difficulty", "").strip()
+
+    treks_query = Trek.query.filter_by(trek_status="Open")
+
+    if location:
+        treks_query = treks_query.filter(Trek.location == location)
+    if difficulty:
+        treks_query = treks_query.filter(Trek.difficulty == difficulty)
+
+    treks = treks_query.all()
+
+    all_locations = [row[0] for row in db.session.query(Trek.location).distinct().all()]
+    all_difficulties = [row[0] for row in db.session.query(Trek.difficulty).distinct().all()]
+
+    recent_bookings = (Booking.query.filter_by(user_id=user_id).order_by(Booking.booking_date.desc()).limit(3).all())
+    return render_template("trekker_dashboard.html", user=user,
+                           treks=treks, location=location, difficulty=difficulty,
+                           all_locations=all_locations, all_difficulties=all_difficulties,
+                           recent_bookings=recent_bookings)
+
+# --------------------------------- Trekker Bookings ---------------------------------
+
+@app.route("/trekker/bookings/<int:user_id>")
+def trekker_bookings(user_id):
+    user = User.query.get_or_404(user_id)
+    bookings = Booking.query.filter_by(user_id=user_id, booking_status="Booked").all()
+    return render_template("trekker_bookings.html", user=user, bookings=bookings)
+
+
+@app.route("/trekker/book/<int:trek_id>/<int:user_id>")
+def trekker_booking(trek_id, user_id):
+    trek = Trek.query.get_or_404(trek_id)
+    user = User.query.get_or_404(user_id)
+
+    existing = Booking.query.filter_by(trek_id=trek_id, user_id=user_id).first()
+    if existing:
+        flash("You have already booked this trek.", "warning")
+        return redirect(url_for("trekker_dashboard", user_id=user_id))
+
+    if trek.available_slots <= 0:
+        flash("No slots available for this trek.", "danger")
+        return redirect(url_for("trekker_dashboard", user_id=user_id))
+
+    new_booking = Booking(user_id=user_id, trek_id=trek_id)
+    trek.available_slots -= 1
+
+    db.session.add(new_booking)
+    db.session.commit()
+
+    flash(f"Successfully booked '{trek.trek_name}'.", "success")
+    return redirect(url_for("trekker_dashboard", user_id=user_id))
+
+
+@app.route("/trekker/cancel/<int:booking_id>/<int:user_id>")
+def trekker_cancel_booking(booking_id, user_id):
+    booking = Booking.query.get_or_404(booking_id)
+
+    booking.booking_status = "cancelled"
+    booking.trek.available_slots += 1
+
+    db.session.commit()
+    flash("Booking cancelled successfully.", "success")
+    return redirect(url_for("trekker_bookings", user_id=user_id))
+
+@app.route("/trekker/trek/details/<int:trek_id>/<int:user_id>")
+def trekker_trek_details(trek_id, user_id):
+    trek = Trek.query.get_or_404(trek_id)
+    booking = Booking.query.filter_by(trek_id=trek_id, user_id=user_id).first()
+    return render_template("trekker_booking_details.html", trek=trek, booking=booking, user_id=user_id)
+
+
+# --------------------------------- Trekker History ---------------------------------
+
+@app.route("/trekker/history/<int:user_id>")
+def trekker_history(user_id):
+    user = User.query.get_or_404(user_id)
+    history = Booking.query.filter_by(user_id=user_id, booking_status="completed").all()
+    return render_template("trekker_history.html", user=user, history=history)
+
+
 
 # ----------------------------------------------------------------------------------------------------
 

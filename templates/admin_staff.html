@@ -145,9 +145,7 @@
                                 <td><span>Approved</span></td>
                                 <td>
                                     <!-- FIXED: was {{staff_id}} (undefined), now {{ staff.id }} -->
-                                    <form action="/admin/blacklist_staff/{{staff.id}}" method="POST">
-                                        <button type="submit" class="btn btn-danger btn-sm">Blacklist</button>
-                                    </form>
+                                    <a class = 'btn btn-danger btn-sm' href="/admin/blacklist_staff/{{staff.id}}">Blacklist</a>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -186,9 +184,7 @@
                                 <td><span>Blacklisted</span></td>
                                 <td>
                                     <!-- FIXED: was {{staff_id}} (undefined), now {{ staff.id }} -->
-                                    <form action="/admin/unblacklist_staff/{{staff.id}}" method="POST">
-                                        <button type="submit" class="btn btn-secondary btn-sm">Unblacklist</button>
-                                    </form>
+                                    <a href="/admin/unblacklist_staff/{{staff.id}}" class="btn btn-secondary btn-sm">Unblacklist</a>
                                 </td>
                             </tr>
                             {% endfor %}

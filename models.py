@@ -27,7 +27,7 @@ class Trek(db.Model):
     difficulty = db.Column(db.String(20),nullable=False)
     duration = db.Column(db.Integer,nullable=False)
     available_slots = db.Column(db.Integer,nullable=False)
-    trek_status = db.Column(db.String(20),nullable=False,default = "pending")
+    trek_status = db.Column(db.String(20),nullable=False,default = "Pending")
     #trek_status = db.Column(db.Enum('pending', 'approved', 'Open' , 'Closed' , 'Completed' , name = 'trek_status'), nullable=False)
     start_date = db.Column(db.Date,nullable=False)
     end_date = db.Column(db.Date,nullable=False)
@@ -42,9 +42,9 @@ class Booking(db.Model):
     id = db.Column(db.Integer  , primary_key = True)
     #booking_date = db.Column(db.Date,nullable=False)
     booking_date = db.Column(db.Date, default=date.today)
-    booking_status = db.Column(db.String(20),nullable=False,default = "booked")
+    booking_status = db.Column(db.String(20),nullable=False,default = "Booked")
     #booking_status = db.Column(db.Enum('Booked', 'Cancelled','Completed' , name = 'booking_status'), nullable = False)
-    payment_status = db.Column(db.String(20),nullable=False,default="pending")
+    payment_status = db.Column(db.String(20),nullable=False,default="Pending")
     #payment_status = db.Column(db.Enum('pending', 'paid','refunded' , name = 'payment_status'), nullable = False)
 
     # Relationship
