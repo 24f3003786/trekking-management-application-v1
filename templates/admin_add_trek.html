@@ -50,7 +50,7 @@
 
                     <div class="row">
 
-                        <!-- Left Column -->
+                        <!------ Left Column ------>
                         <div class="col-md-6">
 
                             <div class="mb-3">
@@ -92,7 +92,7 @@
 
                         </div>
 
-                        <!-- Right Column -->
+                        <!------ Right Column ------>
                         <div class="col-md-6">
 
                             <div class="mb-3">
@@ -100,6 +100,7 @@
                                 <select class="form-select" name="status" required>
                                     <option value="">-- Select Status --</option>
                                     <option>Open</option>
+                                    <option>Started</option>
                                     <option>Closed</option>
                                     <option>Completed</option>
                                 </select>
@@ -119,14 +120,6 @@
                                 <label class="form-label">Assign Staff</label>
                                 <select class="form-select" name="staff_id">
                                     <option value="">-- No Staff Assigned --</option>
-                                    <!--
-                                        approved_staff is a list of Staff_Profile objects passed from Flask.
-                                        Flask sends it as: render_template("admin_add_trek.html", approved_staff=...)
-                                        
-                                        staff.id → the Staff_Profile primary key, saved as Trek.staff_id in DB.
-                                        staff.user.name → the linked User's name shown in the dropdown.
-                                        When submitted, Flask reads request.form.get("staff_id") → e.g. "3".
-                                    -->
                                     {% for staff in approved_staff %}
                                     <option value="{{ staff.id }}">{{ staff.user.name }}</option>
                                     {% endfor %}

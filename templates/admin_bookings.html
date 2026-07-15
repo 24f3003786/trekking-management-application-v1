@@ -42,30 +42,22 @@
                         <a class="nav-link {% if active_tab == 'booked' %}active{% endif %}"
                            href="/admin/bookings?tab=booked">
                             Booked ({{ booked | length }})
-                            <!-- <span class="badge bg-secondary ms-1">{{ booked | length }}</span> -->
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if active_tab == 'cancelled' %}active{% endif %}"
                            href="/admin/bookings?tab=cancelled">
                             Cancelled ({{ cancelled | length }})
-                            <!-- <span class="badge bg-secondary ms-1">{{ cancelled | length }}</span> -->
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if active_tab == 'completed' %}active{% endif %}"
                            href="/admin/bookings?tab=completed">
                             Completed ({{ completed | length }})
-                            <!-- <span class="badge bg-secondary ms-1">{{ completed | length }}</span> -->
                         </a>
                     </li>
                 </ul>
 
-                <!--
-                    Search by user name or trek name.
-                    Hidden input carries the active tab so the tab stays selected after search.
-                    Produces URL like: /admin/bookings?tab=booked&search=john
-                -->
                 <form method="GET" action="/admin/bookings" class="mb-3">
                     <input type="hidden" name="tab" value="{{ active_tab }}">
                     <div class="input-group">
@@ -78,24 +70,8 @@
                     </div>
                 </form>
 
-                <!--
-                    We use a single reusable table structure for all three tabs.
-                    The only difference between tabs is which list is looped over
-                    and what badge color/label is shown for the status column.
 
-                    In app.py, Flask filters bookings by status for each tab:
-                        booked    = Booking.query.filter_by(booking_status="booked").all()
-                        cancelled = Booking.query.filter_by(booking_status="cancelled").all()
-                        completed = Booking.query.filter_by(booking_status="completed").all()
-
-                    Then search filters further using a join:
-                        Booking.query.filter_by(booking_status="booked")
-                               .join(User).filter(User.name.ilike(f'%{search_query}%'))
-                               ...or...
-                               .join(Trek).filter(Trek.trek_name.ilike(f'%{search_query}%'))
-                -->
-
-                <!-- ── BOOKED TAB ── -->
+                <!------ Booked Tab ------>
                 {% if active_tab == 'booked' %}
 
                     {% if booked %}
@@ -111,12 +87,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!--
-                                booking.user.name  → works via User backref on Booking model
-                                booking.trek.trek_name → works via Trek backref on Booking model
-                                booking.booking_date   → Date column, renders as YYYY-MM-DD
-                                booking.payment_status → "pending", "paid", or "refunded"
-                            -->
                             {% for booking in booked %}
                             <tr>
                                 <td>#{{ booking.id }}</td>
@@ -124,23 +94,23 @@
                                 <td>{{ booking.trek.trek_name }}</td>
                                 <td>{{ booking.booking_date }}</td>
                                 <td>
-                                    <!--
-                                        Payment status badge:
-                                        paid    → green
-                                        pending → yellow
-                                        refunded → grey
-                                    -->
-                                    {% if booking.payment_status == "paid" %}
+                                    {% if booking.payment_status == "Paid" %}
                                         <span class="badge bg-success">Paid</span>
-                                    {% elif booking.payment_status == "pending" %}
+                                    {% elif booking.payment_status == "Pending" %}
                                         <span class="badge bg-warning text-dark">Pending</span>
-                                    {% elif booking.payment_status == "refunded" %}
+                                    {% elif booking.payment_status == "Refunded" %}
                                         <span class="badge bg-secondary">Refunded</span>
                                     {% else %}
                                         <span class="badge bg-secondary">{{ booking.payment_status }}</span>
                                     {% endif %}
                                 </td>
-                                <td><span class="badge bg-primary">Booked</span></td>
+                                <td>
+                                    {% if booking.booking_status == "Booked" %}
+                                        <span class="badge bg-primary">Booked</span>
+                                    {% elif booking.booking_status == "Started" %}
+                                        <span class="badge bg-warning text-dark">Started</span>
+                                    {% endif %}
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -153,7 +123,7 @@
                         {% endif %}
                     {% endif %}
 
-                <!-- ── CANCELLED TAB ── -->
+                <!------ Cancelled Tab ------>
                 {% elif active_tab == 'cancelled' %}
 
                     {% if cancelled %}
@@ -176,11 +146,11 @@
                                 <td>{{ booking.trek.trek_name }}</td>
                                 <td>{{ booking.booking_date }}</td>
                                 <td>
-                                    {% if booking.payment_status == "paid" %}
+                                    {% if booking.payment_status == "Paid" %}
                                         <span class="badge bg-success">Paid</span>
-                                    {% elif booking.payment_status == "pending" %}
+                                    {% elif booking.payment_status == "Pending" %}
                                         <span class="badge bg-warning text-dark">Pending</span>
-                                    {% elif booking.payment_status == "refunded" %}
+                                    {% elif booking.payment_status == "Refunded" %}
                                         <span class="badge bg-secondary">Refunded</span>
                                     {% else %}
                                         <span class="badge bg-secondary">{{ booking.payment_status }}</span>
@@ -199,7 +169,7 @@
                         {% endif %}
                     {% endif %}
 
-                <!-- ── COMPLETED TAB ── -->
+                <!------ Completed Tab ------>
                 {% elif active_tab == 'completed' %}
 
                     {% if completed %}
@@ -222,11 +192,11 @@
                                 <td>{{ booking.trek.trek_name }}</td>
                                 <td>{{ booking.booking_date }}</td>
                                 <td>
-                                    {% if booking.payment_status == "paid" %}
+                                    {% if booking.payment_status == "Paid" %}
                                         <span class="badge bg-success">Paid</span>
-                                    {% elif booking.payment_status == "pending" %}
+                                    {% elif booking.payment_status == "Pending" %}
                                         <span class="badge bg-warning text-dark">Pending</span>
-                                    {% elif booking.payment_status == "refunded" %}
+                                    {% elif booking.payment_status == "Refunded" %}
                                         <span class="badge bg-secondary">Refunded</span>
                                     {% else %}
                                         <span class="badge bg-secondary">{{ booking.payment_status }}</span>

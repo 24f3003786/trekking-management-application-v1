@@ -42,14 +42,12 @@
                         <a class="nav-link {% if active_tab == 'active' %}active{% endif %}"
                            href="/admin/users?tab=active">
                             Active ({{ active_users | length }})
-                            <!-- <span class="badge bg-secondary ms-1">{{ active_users | length }}</span> -->
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if active_tab == 'blacklisted' %}active{% endif %}"
                            href="/admin/users?tab=blacklisted">
                             Blacklisted ({{ blacklisted_users | length }})
-                            <!-- <span class="badge bg-secondary ms-1">{{ blacklisted_users | length }}</span> -->
                         </a>
                     </li>
                 </ul>
@@ -63,7 +61,7 @@
                     </div>
                 </form>
 
-                <!-- ── ACTIVE USERS TABLE ── -->
+                <!------ Active Users Table ------>
                 {% if active_tab == 'active' %}
 
                     {% if active_users %}
@@ -79,36 +77,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!--
-                                active_users is a list of User objects filtered by:
-                                    role="trekker" and is_blacklisted=False
-                                In app.py:
-                                    active_users = User.query.filter_by(role="trekker", is_blacklisted=False)
-                                    if search_query:
-                                        active_users = active_users.filter(
-                                            or_(
-                                                User.name.ilike(f'%{search_query}%'),
-                                                User.email.ilike(f'%{search_query}%')
-                                            )
-                                        )
-                                    active_users = active_users.all()
-
-                                or_() lets you search across multiple columns at once —
-                                so "john" matches both name="John Doe" and email="john@mail.com".
-                                You need to import it: from sqlalchemy import or_
-                            -->
                             {% for user in active_users %}
                             <tr>
                                 <td>{{ user.id }}</td>
                                 <td>{{ user.name }}</td>
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.phone }}</td>
-                                <!--
-                                    user.bookings is the relationship list defined in models.py.
-                                    user.bookings | length counts how many bookings this user has.
-                                    This works because of: bookings = db.relationship("Booking", backref="user")
-                                    SQLAlchemy loads the related bookings automatically when accessed.
-                                -->
                                 <td>{{ user.bookings | length }}</td>
                                 <td> 
                                     <a href="{{ url_for('blacklist_user', user_id=user.id) }}" class="btn btn-danger btn-sm">Blacklist</a>
@@ -125,7 +99,7 @@
                         {% endif %}
                     {% endif %}
 
-                <!-- ── BLACKLISTED USERS TABLE ── -->
+                <!------ Blacklisted Users Table ------>
                 {% elif active_tab == 'blacklisted' %}
 
                     {% if blacklisted_users %}

@@ -46,11 +46,18 @@
                     {% endif %}
                 {% endwith %}
 
+                {% if is_locked %}
+                <div class="alert alert-secondary">
+                    This trek is <strong>{{ trek.trek_status }}</strong> - status and available slots
+                    are locked and can no longer be changed. Other details can still be edited.
+                </div>
+                {% endif %}
+
                 <form action="{{ url_for('edit_trek', trek_id=trek.id) }}" method="POST">
 
                     <div class="row">
 
-                        <!-- Left Column -->
+                        <!------ Left Column ------>
                         <div class="col-md-6">
 
                             <div class="mb-3">
@@ -80,19 +87,20 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Available Slots</label>
-                                <input type="number" class="form-control" name="available_slots" value="{{ trek.available_slots }}" min="0" required>
+                                <input type="number" class="form-control" name="available_slots" value="{{ trek.available_slots }}" min="0" {% if is_locked %}disabled{% endif %} required>
                             </div>
 
                         </div>
 
-                        <!-- Right Column -->
+                        <!------ Right Column ------>
                         <div class="col-md-6">
 
                             <div class="mb-3">
                                 <label class="form-label">Trek Status</label>
-                                <select class="form-select" name="status" required>
+                                <select class="form-select" name="status" {% if is_locked %}disabled{% endif %} required>
                                     <option value="">-- Select Status --</option>
                                     <option {% if trek.trek_status == "Open" %}selected{% endif %}>Open</option>
+                                    <option {% if trek.trek_status == "Started" %}selected{% endif %}>Started</option>
                                     <option {% if trek.trek_status == "Closed" %}selected{% endif %}>Closed</option>
                                     <option {% if trek.trek_status == "Completed" %}selected{% endif %}>Completed</option>
                                 </select>
@@ -113,12 +121,6 @@
                                 <select class="form-select" name="staff_id">
                                     <option value="">-- No Staff Assigned --</option>
                                     {% for staff in approved_staff %}
-                                    <!--
-                                        trek.staff_id is the currently assigned staff's primary key.
-                                        We compare it to staff.id for each option in the loop.
-                                        If they match, that option gets `selected` — showing who
-                                        is currently assigned when the edit form loads.
-                                    -->
                                     <option value="{{ staff.id }}"
                                         {% if trek.staff_id == staff.id %}selected{% endif %}>
                                         {{ staff.user.name }}

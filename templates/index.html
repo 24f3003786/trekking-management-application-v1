@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Trekking Management Application</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .hero {
+            position: relative;
+            height: 85vh;
+            overflow: hidden;
+            color: #fff;
+        }
+        .hero-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .hero-content {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 1rem;
+            background: rgba(0, 0, 0, 0.25);
+        }
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+        .hero-content p {
+            font-size: 1.25rem;
+            max-width: 600px;
+            margin-bottom: 2rem;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+        }
+        .features {
+            padding: 4rem 0;
+            background: #f8f9fa;
+        }
+        .feature-card {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Trekking Management Application</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link active" href="/">Home</a>
+                <a class="nav-link" href="/login">Login</a>
+                <a class="nav-link" href="/register-choice">Register</a>
+            </div>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <div class="container mt-3">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} py-2">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- ── HERO ── -->
+    <div class="hero">
+        <svg class="hero-img" viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect x="0" y="0" width="680" height="340" fill="#0d6efd"/>
+            <rect x="0" y="0" width="680" height="140" fill="#0a5fd4"/>
+            <circle cx="540" cy="70" r="45" fill="#5ba4ff" opacity="0.35"/>
+            <circle cx="540" cy="70" r="28" fill="#cce0ff" opacity="0.5"/>
+            <polygon points="0,200 80,110 160,160 240,90 320,140 400,80 480,130 560,75 640,120 680,100 680,220 0,220" fill="#2563eb"/>
+            <polygon points="0,220 60,155 130,195 200,140 280,180 360,130 440,175 520,125 600,165 660,135 680,150 680,250 0,250" fill="#1d4ed8"/>
+            <polygon points="0,250 50,200 110,235 180,190 250,228 330,185 410,222 480,178 560,215 630,185 680,205 680,280 0,280" fill="#1e40af"/>
+            <rect x="0" y="275" width="680" height="65" fill="#1e3a8a"/>
+            <ellipse cx="100" cy="278" rx="120" ry="20" fill="#1e3a8a"/>
+            <ellipse cx="350" cy="275" rx="180" ry="22" fill="#1e3a8a"/>
+            <ellipse cx="600" cy="280" rx="110" ry="18" fill="#1e3a8a"/>
+            <path d="M340,340 Q320,305 300,290 Q270,270 250,255 Q220,235 200,215" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="8,5" opacity="0.6"/>
+            <g transform="translate(198,205)">
+                <line x1="0" y1="0" x2="0" y2="16" stroke="#0a2463" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="0" cy="-5" r="4.5" fill="#0a2463"/>
+                <line x1="-7" y1="5" x2="7" y2="3" stroke="#0a2463" stroke-width="2" stroke-linecap="round"/>
+                <line x1="0" y1="16" x2="-5" y2="26" stroke="#0a2463" stroke-width="2" stroke-linecap="round"/>
+                <line x1="0" y1="16" x2="4" y2="26" stroke="#0a2463" stroke-width="2" stroke-linecap="round"/>
+                <line x1="8" y1="3" x2="14" y2="26" stroke="#0a2463" stroke-width="1.5" stroke-linecap="round"/>
+            </g>
+            <polygon points="240,90 252,108 228,108" fill="#cde8ff" opacity="0.7"/>
+            <polygon points="400,80 414,102 386,102" fill="#cde8ff" opacity="0.7"/>
+            <polygon points="560,75 575,100 545,100" fill="#cde8ff" opacity="0.7"/>
+            <g fill="#ffffff" opacity="0.5">
+                <circle cx="80" cy="30" r="1.5"/><circle cx="150" cy="18" r="1"/>
+                <circle cx="220" cy="40" r="1.5"/><circle cx="290" cy="22" r="1"/>
+                <circle cx="380" cy="35" r="1.5"/><circle cx="450" cy="15" r="1"/>
+                <circle cx="600" cy="28" r="1.5"/><circle cx="650" cy="45" r="1"/>
+            </g>
+            <g fill="#1e3a8a">
+                <polygon points="30,275 42,250 54,275"/>
+                <polygon points="34,268 42,247 50,268"/>
+                <polygon points="55,278 65,257 75,278"/>
+                <polygon points="58,271 65,252 72,271"/>
+                <polygon points="610,277 622,252 634,277"/>
+                <polygon points="613,270 622,249 631,270"/>
+                <polygon points="635,275 647,255 659,275"/>
+                <polygon points="638,268 647,251 656,268"/>
+            </g>
+        </svg>
+
+        <div class="hero-content">
+            <h1>Adventure Starts Here</h1>
+            <p>Discover breathtaking treks, book your next expedition, and let expert guides lead the way.</p>
+            <div>
+                <a href="/register-choice" class="btn btn-primary btn-lg me-2">Get Started</a>
+                <a href="/login" class="btn btn-outline-light btn-lg">Sign In</a>
+            </div>
+        </div>
+    </div>
+
+    <!------ Features ------>
+    <div class="features">
+        <div class="container">
+            <h2 class="text-center fw-bold mb-5">Why Trek With Us?</h2>
+            <div class="row g-4">
+
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div style="width:64px;height:64px;border-radius:50%;background:#0d6efd;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                            <svg width="30" height="30" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                <path d="M3 17l4-8 4 4 4-6 4 10"/>
+                            </svg>
+                        </div>
+                        <h4>Explore Treks</h4>
+                        <p class="text-muted">Browse a curated catalogue of treks across every difficulty level, from beginner-friendly trails to demanding high-altitude expeditions.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div style="width:64px;height:64px;border-radius:50%;background:#0d6efd;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                            <svg width="30" height="30" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                                <line x1="16" y1="2" x2="16" y2="6"/>
+                                <line x1="8" y1="2" x2="8" y2="6"/>
+                                <line x1="3" y1="10" x2="21" y2="10"/>
+                                <line x1="8" y1="14" x2="8" y2="14"/>
+                                <line x1="12" y1="14" x2="12" y2="14"/>
+                                <line x1="16" y1="14" x2="16" y2="14"/>
+                            </svg>
+                        </div>
+                        <h4>Book &amp; Track</h4>
+                        <p class="text-muted">Reserve a spot in a few clicks, pay online, and follow your booking through every stage from confirmation to completion.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div style="width:64px;height:64px;border-radius:50%;background:#0d6efd;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                            <svg width="30" height="30" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                        </div>
+                        <h4>Guided by Experts</h4>
+                        <p class="text-muted">Every trek is led by approved staff members verified for experience — you focus on the trail, they handle the logistics.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!------ Footer ------>
+    <footer class="text-center py-3 text-muted small border-top">
+        &copy; Trekking Management Application
+    </footer>
+
+</body>
+</html>

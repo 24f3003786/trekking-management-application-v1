@@ -43,14 +43,13 @@
                     {% endif %}
                 {% endwith %}
 
-                <!-- ── STAT CARDS ── -->
+                <!------ Stat Cards ------>
                 <div class="row g-3 mb-4">
                     <div class="col-md-3">
                         <div class="card border-light mb-3">
                             <div class="card-header text-center">Total Treks</div>
                             <div class="card-body">
                                 <h3 class="card-title text-center">{{ total_treks }}</h3>
-                                <!-- <p class="card-text">Total Treks</p> -->
                             </div>
                         </div>
                     </div>
@@ -60,7 +59,6 @@
                             <div class="card-header text-center">Total Users</div>
                             <div class="card-body">
                                 <h3 class="card-title text-center">{{ total_users }}</h3>
-                                <!-- <p class="card-text">Total Users</p> -->
                             </div>
                         </div>
                     </div>
@@ -70,7 +68,6 @@
                             <div class="card-header text-center">Total Staff</div>
                             <div class="card-body">
                                 <h3 class="card-title text-center">{{ total_staff }}</h3>
-                                <!-- <p class="card-text"> Staff</p> -->
                             </div>
                         </div>
                     </div>
@@ -80,14 +77,33 @@
                             <div class="card-header text-center">Total Bookings</div>
                             <div class="card-body">
                                 <h3 class="card-title text-center">{{ total_bookings }}</h3>
-                                <!-- <p class="card-text">Total Bookings</p> -->
                             </div>
                         </div>
                     </div>
 
                 </div>
 
-                <!-- ── RECENT BOOKINGS TABLE ── -->
+                <!------ Charts ------>
+                {% if trek_chart or booking_chart %}
+                <div class="row mb-4">
+                    {% if trek_chart %}
+                    <div class="col-md-6">
+                        <div class="card p-2">
+                            <img src="{{ trek_chart }}" alt="Treks by Status" class="img-fluid">
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if booking_chart %}
+                    <div class="col-md-6">
+                        <div class="card p-2">
+                            <img src="{{ booking_chart }}" alt="Bookings by Status" class="img-fluid">
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!------ Recent Booking table ------>
                 <h5 class="mb-3">Recent Bookings</h5>
 
                 {% if recent_bookings %}
@@ -109,11 +125,11 @@
                             <td>{{ booking.trek.trek_name }}</td>
                             <td>{{ booking.booking_date }}</td>
                             <td>
-                                {% if booking.booking_status == "booked" %}
+                                {% if booking.booking_status == "Booked" %}
                                     <span class="badge bg-primary">Booked</span>
-                                {% elif booking.booking_status == "cancelled" %}
+                                {% elif booking.booking_status == "Cancelled" %}
                                     <span class="badge bg-danger">Cancelled</span>
-                                {% elif booking.booking_status == "completed" %}
+                                {% elif booking.booking_status == "Completed" %}
                                     <span class="badge bg-success">Completed</span>
                                 {% else %}
                                     <span class="badge bg-secondary">{{ booking.booking_status }}</span>

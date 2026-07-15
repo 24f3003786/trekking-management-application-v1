@@ -18,6 +18,7 @@
                         <a class="nav-link active" href="/trekker/dashboard/{{ user.id }}">Dashboard</a>
                         <a class="nav-link" href="/trekker/bookings/{{ user.id }}">My Bookings</a>
                         <a class="nav-link" href="/trekker/history/{{ user.id }}">History</a>
+                        <a class="nav-link" href="/trekker/profile/{{ user.id }}">Profile</a>
                         <a class="nav-link" href="/logout">Logout</a>
                     </div>
                 </div>
@@ -35,14 +36,7 @@
                     {% endif %}
                 {% endwith %}
 
-                <!-- ── FILTERS ── -->
-                <!--
-                    GET form, no JS. Selecting a dropdown alone does nothing —
-                    the "Filter" button must be clicked to resubmit the page
-                    with ?difficulty=...&location=... in the URL.
-                    "selected" on each option re-applies after reload so the
-                    dropdown shows what's currently active, not the default.
-                -->
+                <!------ Filters ------>
                 <form method="GET" action="/trekker/dashboard/{{ user.id }}" class="row g-2 mb-3">
                     <div class="col-auto">
                         <select name="difficulty" class="form-select">
@@ -66,7 +60,8 @@
                 </form>
             </div>
             <div class="container mt-4">
-                <!-- ── AVAILABLE TREKS ── -->
+
+                <!------ Available treks------>
                 <h5 class="mb-2">Available Treks</h5>
                 {% if treks %}
                 <div style="max-height: 300px; overflow-y: auto;">
@@ -105,7 +100,7 @@
                     {% endif %}
                 {% endif %}
 
-                <!-- ── RECENT BOOKINGS PREVIEW ── -->
+                <!------ Recent Bokings Preview ------>
                 <h5 class="mt-4 mb-2">My Bookings</h5>
                 {% if recent_bookings %}
                 <table class="table table-bordered text-center">
@@ -124,7 +119,17 @@
                             <td>{{ booking.trek.trek_name }}</td>
                             <td>{{ booking.trek.location }}</td>
                             <td>{{ booking.booking_date.strftime('%d %b %Y') }}</td>
-                            <td>{{ booking.booking_status }}</td>
+                            <td>
+                                {% if booking.booking_status == "Booked" %}
+                                    <span class="badge bg-primary">Booked</span>
+                                {% elif booking.booking_status == "Started" %}
+                                    <span class="badge bg-warning text-dark">Started</span>
+                                {% elif booking.booking_status == "Cancelled" %}
+                                    <span class="badge bg-danger">Cancelled</span>
+                                {% elif booking.booking_status == "Completed" %}
+                                    <span class="badge bg-success">Completed</span>
+                                {% endif %}
+                            </td>
                             <td>
                                 <a href="/trekker/trek/details/{{ booking.trek.id }}/{{ user.id }}" class="btn btn-outline-info btn-sm">View Details</a>
                             </td>

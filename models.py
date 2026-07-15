@@ -10,9 +10,8 @@ class User(db.Model):
     name = db.Column(db.String() , nullable=False)
     email=db.Column(db.String(), unique = True , nullable=False )
     password = db.Column(db.String() , nullable=False)
-    phone = db.Column(db.String(15))
+    phone = db.Column(db.String(15) , nullable=False ,unique = True)
     role = db.Column(db.String(), nullable=False , default='trekker')
-    #role = db.Column(db.Enum('admin', 'trek_staff', 'trekker', name = 'user_roles'), nullable=False)
     is_blacklisted = db.Column(db.Boolean , nullable= False , default = False)
 
     # relationship
@@ -28,7 +27,6 @@ class Trek(db.Model):
     duration = db.Column(db.Integer,nullable=False)
     available_slots = db.Column(db.Integer,nullable=False)
     trek_status = db.Column(db.String(20),nullable=False,default = "Pending")
-    #trek_status = db.Column(db.Enum('pending', 'approved', 'Open' , 'Closed' , 'Completed' , name = 'trek_status'), nullable=False)
     start_date = db.Column(db.Date,nullable=False)
     end_date = db.Column(db.Date,nullable=False)
     description = db.Column(db.Text)
@@ -40,12 +38,10 @@ class Trek(db.Model):
 class Booking(db.Model):
     __tablename__ = "booking"
     id = db.Column(db.Integer  , primary_key = True)
-    #booking_date = db.Column(db.Date,nullable=False)
     booking_date = db.Column(db.Date, default=date.today)
     booking_status = db.Column(db.String(20),nullable=False,default = "Booked")
-    #booking_status = db.Column(db.Enum('Booked', 'Cancelled','Completed' , name = 'booking_status'), nullable = False)
     payment_status = db.Column(db.String(20),nullable=False,default="Pending")
-    #payment_status = db.Column(db.Enum('pending', 'paid','refunded' , name = 'payment_status'), nullable = False)
+    
 
     # Relationship
     user_id = db.Column(db.Integer,db.ForeignKey("user.id"), nullable=False) # many     
@@ -57,10 +53,6 @@ class Booking(db.Model):
 class Staff_Profile(db.Model):
     __tablename__ = "staff_profile"
     id = db.Column(db.Integer  , primary_key = True)
-    # name = db.Column(db.String() , nullable=False)
-    # email = db.Column(db.String(), unique = True , nullable=False )
-    # password = db.Column(db.String() , nullable=False)
-    # phone = db.Column(db.String(15))
     description = db.Column(db.Text)
     approved = db.Column(db.Boolean,nullable=False,default=False)
 

@@ -18,6 +18,7 @@
                         <a class="nav-link" href="/trekker/dashboard/{{ user.id }}">Dashboard</a>
                         <a class="nav-link" href="/trekker/bookings/{{ user.id }}">My Bookings</a>
                         <a class="nav-link active" href="/trekker/history/{{ user.id }}">History</a>
+                        <a class="nav-link" href="/trekker/profile/{{ user.id }}">Profile</a>
                         <a class="nav-link" href="/logout">Logout</a>
                     </div>
                 </div>
@@ -54,10 +55,24 @@
                                 <td>{{ booking.trek.trek_name }}</td>
                                 <td>{{ booking.trek.location }}</td>
                                 <td>{{ booking.booking_date.strftime('%d %b %Y') }}</td>
-                                <td>{{ booking.payment_status }}</td>
-                                <td>{{ booking.booking_status }}</td>
                                 <td>
-                                    <a href="/trekker/booking/details/{{ booking.id }}/{{ user.id }}" class="btn btn-info btn-sm">View Details</a>
+                                    {% if booking.payment_status == "Paid" %}
+                                        <span class="badge bg-success">Paid</span>
+                                    {% elif booking.payment_status == "Pending" %}
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    {% elif booking.payment_status == "Refunded" %}
+                                        <span class="badge bg-secondary">Refunded</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if booking.booking_status == "Completed" %}
+                                        <span class="badge bg-success">Completed</span>
+                                    {% elif booking.booking_status == "Cancelled" %}
+                                        <span class="badge bg-danger">Cancelled</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="/trekker/trek/details/{{ booking.trek.id }}/{{ user.id }}" class="btn btn-outline-info btn-sm">View Details</a>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -66,6 +81,18 @@
                 </div>
                 {% else %}
                 <div class="alert alert-info">No completed treks yet.</div>
+                {% endif %}
+
+                
+                <!------ Charts ------>
+                {% if booking_chart %}
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card p-2">
+                            <img src="{{ booking_chart }}" alt="My Bookings by Status" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
                 {% endif %}
 
             </div>

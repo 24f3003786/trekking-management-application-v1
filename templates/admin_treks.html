@@ -56,7 +56,7 @@
                     </div>
                 </form>
 
-                <!-- ── TREKS TABLE ── -->
+                <!------ treks table ------>
                 {% if treks %}
                 <div style="max-height: 400px; overflow-y: auto;">
                     <table class="table table-bordered table-hover text-center">
@@ -79,7 +79,17 @@
                                 <td>{{ trek.location }}</td>
                                 <td>{{ trek.difficulty }}</td>
                                 <td>{{ trek.available_slots }}</td>
-                                <td>{{ trek.trek_status }}</td>
+                                <td>
+                                    {% if trek.trek_status == "Open" %}
+                                        <span class="badge bg-primary">Open</span>
+                                    {% elif trek.trek_status == "Started" %}
+                                        <span class="badge bg-warning text-dark">Started</span>
+                                    {% elif trek.trek_status == "Completed" %}
+                                        <span class="badge bg-success">Completed</span>
+                                    {% elif trek.trek_status == "Closed" %}
+                                        <span class="badge bg-danger">Closed</span>
+                                    {% endif %}
+                                </td>
                                 <td>
                                     <div class="d-flex gap-3 justify-content-center">
                                         <a href="/admin/trek/edit/{{trek.id}}" class="btn btn-warning btn-sm">Update</a>
